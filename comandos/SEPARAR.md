@@ -6,21 +6,18 @@
   
   Hay 'condiciones peligrosas' que no son gestionadas de forma especial:
        
-       a) Cuando:
-           (1) el final de un subtítulo anterior en el documento
-           (2) acaba dejando un espacio de tiempo menor al mínimo con otro subtítulo
-           (3) pero desapareciendo después y no antes de aparecer el siguiente subtítulo:
-               => En este caso, se mueve de la misma forma, el principio del segundo subtítulo, la franja del margen mínimo, hacia la derecha.
-       
-       b) Cuando:
-           (1) hay aglutinamiento de proximidad de subtítulos en el tiempo, por ejemplo, [a:0.1, b:0.2, c:0.3, d:0.4]
-               => En este caso, cada solapamiento considerará el subtítulo anterior más próximo, y se modificará igual, moviendo el principio del segundo subtítulo, la franja del margen mínimo, hacia la derecha.
-       
-       c) No permite decidir qué lado carga con la diferencia, ni cuánto. Ahora toda la carga la corrige el segundo subtítulo, moviendo su principio, exactamente, el margen mínimo.
-       
-       d) La carga siempre resulta, indiferentemente de la distancia de tiempo con respecto a los subtítulos concomitantes, en un movimiento del principio del segundo subtítulo, hacia la derecha, por tanto como el margen mínimo. Quizá lo más deseable fuera completar la distancia respectiva con el anterior para formar el margen mínimo.
-       
-       e) Los filtros de clases, inclusivos y exclusivos, solo se aplican con respecto al subtítulo de la derecha del solapamiento, esto es: si el subtítulo que se solapa es el de la izquierda, el programa permite el cambio, porque solo va a cambiar el de la derecha. Esto quizá tampoco sea lo más deseable.
+  - a) Cuando:
+    - (1) el final de un subtítulo anterior en el documento
+    - (2) acaba dejando un espacio de tiempo menor al mínimo con otro subtítulo
+    - (3) pero desapareciendo después y no antes de aparecer el siguiente subtítulo:
+      - => En este caso, se mueve de la misma forma, el principio del segundo subtítulo, la franja del margen mínimo, hacia la derecha.
+
+  - b) Cuando:
+    - (1) hay aglutinamiento de proximidad de subtítulos en el tiempo, por ejemplo, [a:0.1, b:0.2, c:0.3, d:0.4]
+      - => En este caso, cada solapamiento considerará el subtítulo anterior más próximo, y se modificará igual, moviendo el principio del segundo subtítulo, la franja del margen mínimo, hacia la derecha.
+  - c) No permite decidir qué lado carga con la diferencia, ni cuánto.  Ahora toda la carga la corrige el segundo subtítulo, moviendo su principio, exactamente, el margen mínimo.
+  - d) La carga siempre resulta, indiferentemente de la distancia de tiempo con respecto a los subtítulos concomitantes, en un movimiento del principio del segundo subtítulo, hacia la derecha, por tanto como el margen mínimo. Quizá lo más deseable fuera completar la distancia respectiva con el anterior para formar el margen mínimo.
+  - e) Los filtros de clases, inclusivos y exclusivos, solo se aplican con respecto al subtítulo de la derecha del solapamiento, esto es: si el subtítulo que se solapa es el de la izquierda, el programa permite el cambio, porque solo va a cambiar el de la derecha. Esto quizá tampoco sea lo más deseable.
 
   Estas features no se han cerrado para así poder saber qué se quiere conseguir antes de limitar el algoritmo o complicarlo de más.
  
