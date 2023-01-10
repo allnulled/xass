@@ -1,4 +1,4 @@
-[![npm](https://nodei.co/npm/xass.png)](https://npmjs.com/xass/)
+[![npm](https://nodei.co/npm/xass.png)](https://npmjs.com/@allnulled/xass)
 
 # xass
 
@@ -66,4 +66,5 @@ A continuación se listan todos los comandos que está preparado para correr el 
 
 ## Referencias:
 
-[https://github.com/allnulled/xass](https://github.com/allnulled/xass)
+  · Github: [https://github.com/allnulled/xass](https://github.com/allnulled/xass)
+  · NPM: [https://npmjs.com/@allnulled/xass](https://npmjs.com/@allnulled/xass)
