@@ -66,7 +66,8 @@ A continuación se listan todos los comandos que está preparado para correr el 
 
 ## Referencias:
 
-  · Github: [https://github.com/allnulled/xass](https://github.com/allnulled/xass)
-  · NPM: [https://npmjs.com/@allnulled/xass](https://npmjs.com/@allnulled/xass)
-  · Otros: 
-    · Comando separar: [./comandos/SEPARAR.md](./comandos/SEPARAR.md)
+  - Github: [https://github.com/allnulled/xass](https://github.com/allnulled/xass)
+  - NPM: [https://npmjs.com/@allnulled/xass](https://npmjs.com/@allnulled/xass)
+  - Otros: 
+    
+    - Comando separar: [./comandos/SEPARAR.md](./comandos/SEPARAR.md)
