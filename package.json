@@ -1,6 +1,6 @@
 {
   "name": "@allnulled/xass",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Compendio de utilidades para alterar masivamente ficheros .ass desde línea de comandos",
   "bin": {
     "xass": "xass.bin.js"
