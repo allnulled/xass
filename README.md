@@ -13,7 +13,7 @@ Programa de línea de comandos para modificar ficheros [`.ass (SubStation Alpha)
 Desde la línea de comandos:
 
 ```sh
- $  npm install -g xass
+ $  npm install -g @allnulled/xass
 ```
 
 ## Uso:
