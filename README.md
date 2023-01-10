@@ -6,7 +6,7 @@ Programa de línea de comandos para modificar ficheros [`.ass (SubStation Alpha)
 
 ## Prerrequisitos:
 
-  · Tener instalado [npm/node](#) y accesible desde línea de comandos.
+  · Tener instalado [npm/node](https://nodejs.org/en/download/) y accesible desde línea de comandos.
 
 ## Instalación:
 

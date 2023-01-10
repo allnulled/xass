@@ -1,0 +1,11 @@
+[DEBUG] · Separando comentarios en fichero [1/1]: /home/carlos/Escritorio/Nuevo/xass/test/001.ass
+[DEBUG]   · [SOLAPAMIENTO] @sección={2:Events} @subtítulo={4215:Dialogue} @estilo={Sign - Menu} @antes=[0:15:48.76] @ahora=[0:15:48.93]
+[DEBUG]   · [SOLAPAMIENTO] @sección={2:Events} @subtítulo={4216:Dialogue} @estilo={Sign - Menu} @antes=[0:15:48.88] @ahora=[0:15:49.05]
+[DEBUG]   · [SOLAPAMIENTO] @sección={2:Events} @subtítulo={4219:Dialogue} @estilo={Sign - Menu} @antes=[0:15:48.88] @ahora=[0:15:49.05]
+[DEBUG]   · [SOLAPAMIENTO] @sección={2:Events} @subtítulo={4220:Dialogue} @estilo={Sign - Menu} @antes=[0:15:49.01] @ahora=[0:15:49.18]
+[DEBUG]   · [SOLAPAMIENTO] @sección={2:Events} @subtítulo={4221:Dialogue} @estilo={Sign - Menu} @antes=[0:15:49.26] @ahora=[0:15:49.43]
+[DEBUG]   · [SOLAPAMIENTO] @sección={2:Events} @subtítulo={4222:Dialogue} @estilo={Sign - Menu} @antes=[0:15:49.34] @ahora=[0:15:49.51]
+[DEBUG]   · [SOLAPAMIENTO] @sección={2:Events} @subtítulo={4223:Dialogue} @estilo={Sign - Menu} @antes=[0:15:49.42] @ahora=[0:15:49.59]
+[DEBUG]   · [SOLAPAMIENTO] @sección={2:Events} @subtítulo={4224:Dialogue} @estilo={Sign - Menu} @antes=[0:15:48.76] @ahora=[0:15:48.93]
+[DEBUG]   · [SOLAPAMIENTO] @sección={2:Events} @subtítulo={4225:Dialogue} @estilo={Sign - Menu} @antes=[0:15:48.88] @ahora=[0:15:49.05]
+[DEBUG] · Corregidos «9» solapamientos entre subtítulos.

@@ -6,11 +6,12 @@ module.exports = function() {
     console.log("    $ xass <ficheros> -x <comando>");
     console.log("    $ xass <ficheros> -x <comando> -a [arg] -b [arg] -c [arg]");
     console.log("[ Comando ]");
-    console.log("    xass -x ayuda: imprime esta ayuda");
-    console.log("    xass -x separar: aplica una separación temporal mínima entre subtítulos");
+    console.log("    · xass -x separar: aplica una separación temporal mínima entre subtítulos");
     console.log("      --separacion: por defecto «0.17»");
     console.log("      --incluir-estilo: solo modificará los estilos coincidentes");
     console.log("      --excluir-estilo: solo modificará los estilos no coincidentes");
+    console.log("    · xass -x ayuda: imprime esta ayuda");
+    console.log("    · xass -x version: imprime la versión actual del xass en ejecución");
     console.log("[ Documentación ]");
     console.log("    https://github.com/allnulled/xass");
     console.log("");

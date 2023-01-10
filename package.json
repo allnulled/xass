@@ -7,7 +7,7 @@
   },
   "main": "xass.js",
   "scripts": {
-    "test": "cp test/001.bkp.ass test/001.ass"
+    "test": "cp test/001.bkp.ass test/001.ass && ./xass.bin.js -x separar test/001.ass --incluir-estilo 'Sign - Menu' > test.report.txt && node test.js"
   },
   "keywords": [
     "ass",
