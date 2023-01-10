@@ -42,10 +42,10 @@ A continuación se listan todos los comandos que está preparado para correr el 
 
 **Descripción:**
 
-> Consiste en aplicar una separación entre el final de un subtítulo y el principio de otro, en los casos en que ambos valores coinciden.
+> Consiste en aplicar una separación entre el final de un subtítulo y el principio de otro, en los casos en que ambos valores coinciden o cuya separación en tiempo no supera la **separación mínima entre subtítulos**.
 
 **Parámetros:**
-  - `--separacion`: número de segundos como intervalo mínimo de diferencia a aplicar. Por defecto: "0.17"
+  - `--separacion`: número de segundos como intervalo mínimo de diferencia a aplicar. Por defecto: "0.17". El valor está en centésimas de segundo.
   - `--incluir-estilo`: estilo único al cual se aplica este intervalo. Soporta expresiones regulares cuando sigue el formato: `"/blablabla/g"`.
   - `--excluir-estilo`: estilo único al cual no se aplica este intervalo. Soporta expresiones regulares cuando sigue el formato: `"/blablabla/g"`.
 
