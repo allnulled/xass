@@ -64,10 +64,13 @@ A continuación se listan todos los comandos que está preparado para correr el 
  $  xass -x separar fichero1.ass fichero2.ass --separacion "0.17" --excluir-estilo "phone"
 ```
 
-**Notas sobre el algoritmo:**
+**Notas sobre el algoritmo del comando `xass -x separar`:**
 
  - Sólo hará 1 cambio (en el inicio o en el final) por cada subtítulo por ejecución.
- - Se separarán
+ - Los subtítulos se separan lo justo para que haya la `--separación` mínima establecida como parámetro.
+ - La separación puede establecerse según los lados con `--carga-izquierda` y `--carga-derecha`.
+ - Los filtros de clases (`--incluir-estilo` y `--excluir-estilo`) se aplican tanto para el subtítulo A como para el B.
+
 
 ----
 
