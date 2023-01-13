@@ -48,6 +48,8 @@ A continuación se listan todos los comandos que está preparado para correr el 
   - `--separacion`: número de segundos como intervalo mínimo de diferencia a aplicar. Por defecto: "0.17". El valor está en centésimas de segundo.
   - `--incluir-estilo`: estilo único al cual se aplica este intervalo. Soporta expresiones regulares cuando sigue el formato: `"/blablabla/g"`.
   - `--excluir-estilo`: estilo único al cual no se aplica este intervalo. Soporta expresiones regulares cuando sigue el formato: `"/blablabla/g"`.
+  - `--carga-izquierda`: porcentaje de movimiento que recibe el subtítulo del lado izquierdo del solapamiento. Por defecto: `50`.
+  - `--carga-derecha`: porcentaje de movimiento que recibe el subtítulo del lado derecho del solapamiento. Por defecto: `50`.
 
 **Ejemplos:**
 
@@ -62,12 +64,14 @@ A continuación se listan todos los comandos que está preparado para correr el 
  $  xass -x separar fichero1.ass fichero2.ass --separacion "0.17" --excluir-estilo "phone"
 ```
 
+**Notas sobre el algoritmo:**
+
+ - Sólo hará 1 cambio (en el inicio o en el final) por cada subtítulo por ejecución.
+ - Se separarán
+
 ----
 
 ## Referencias:
 
   - Github: [https://github.com/allnulled/xass](https://github.com/allnulled/xass)
   - NPM: [https://npmjs.com/@allnulled/xass](https://npmjs.com/@allnulled/xass)
-  - Otros: 
-    
-    - Comando separar: [./comandos/SEPARAR.md](./comandos/SEPARAR.md)
