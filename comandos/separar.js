@@ -161,6 +161,9 @@ module.exports = function (args) {
                             (function (seccion_subtitulo_anterior, indicesJuntos, subtitulo_anterior, milisegundos_de_diferencia, longitud_de_movimiento, movimiento_izquierda, cargaIzquierda, movimiento_derecha, cargaDerecha, seccion, subtitulo) {
                                 debug({
                                     "Progreso": dibujar_barra(bodyIndex, seccion.body.length),
+                                    "Solapamiento": `${milisegundos_de_diferencia} milisegundos después`,
+                                    "Separación mínima": separacionFloatMs,
+                                    "Separación concreta": longitud_de_movimiento,
                                     "Subtítulo A": {
                                         "Sección": seccion_subtitulo_anterior,
                                         "Sección (índice)": indicesJuntos[0],
@@ -170,8 +173,6 @@ module.exports = function (args) {
                                         "Start": subtitulo_anterior.value.Start,
                                         "End": valorFinalPrevio,
                                         "End modificado": subtitulo_anterior.value.End,
-                                        "Solapamiento": `${milisegundos_de_diferencia} milisegundos después`,
-                                        "Separación": longitud_de_movimiento,
                                         "Movimiento izquierda": (movimiento_izquierda/1000) + " segundos",
                                         "Carga izquierda": cargaIzquierda + "%",
                                         "Texto": subtitulo_anterior.value.Text
