@@ -1,3 +1,10 @@
+// @TODOS:
+//  [ ] Parametrizar (por defecto 50%/50%) la carga del movimiento lateral (--carga-izquierda 50 --carga-derecha 50)
+//    [ ] Por tanto, computar la separación necesaria y mínima para que termine siendo la separación
+//    [ ] En casos de aglutinamiento, se recomienda balancear la carga a 1 lado
+//  [ ] Aplicar las clases a los 2 subtítulos
+//  [ ] ...
+
 /**
  * 
  * Notas para entender el estado de este script. Si quieres ir rápido, ves al FORMULARIO FINAL directamente.
@@ -44,7 +51,7 @@
  *  (B) Opción 1: No meterse.
  *      Opción 2: Personalizable.
  * 
- *  (C) Opción 1: Parametrizar la carga de separación lateral con --carga-izquiera / --carga-derecha.
+ *  (C) Opción 1: Parametrizar la carga de separación lateral con --carga-izquiera 50% / --carga-derecha 50%.
  *      Opción 2: Dejarlo cargando la derecha el 100%.
  * 
  *  (D) Opción 1: Cambiarlo para calcular la diferencia con respecto al anterior y aplicar lo necesario para espaciar con el margen mínimo.
