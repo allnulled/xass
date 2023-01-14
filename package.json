@@ -5,7 +5,7 @@
   "bin": {
     "xass": "xass.bin.js"
   },
-  "main": "xass.js",
+  "main": "xass.api.js",
   "scripts": {
     "test": "cp test/001.bkp.ass test/001.ass && ./xass.bin.js -x separar test/001.ass --excluir-estilo 'Sign - Menu' > test/test.report.txt && node test/test.js",
     "test:2": "cp test/002.bkp.ass test/002.ass && ./xass.bin.js -x separar test/002.ass --excluir-estilo 'Sign - Menu' > test/test.report.txt && node test/test.js",
