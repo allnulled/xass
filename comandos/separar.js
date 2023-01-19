@@ -205,7 +205,7 @@ module.exports = function (args) {
         require("fs").writeFileSync(ruta, contenido_modificado, "utf8");
     } /*::Iterando_ficheros_de_parametros*/
     debug(`· Corregidos «${estadisticas.total_de_solapamientos}» solapamientos entre subtítulos de un total de «${estadisticas.total_de_subtitulos}» subtítulos.`)
-    debug(`· La traducción ha tomado «${cronometro_inicial.tiempo() / 1000}» segundos.`);
+    debug(`· La separación de subtítulos ha tomado «${cronometro_inicial.tiempo() / 1000}» segundos.`);
     if (estadisticas.total_de_solapamientos_descartados_por_estilo_excluido) {
         debug(`· Se descartaron «${estadisticas.total_de_solapamientos_descartados_por_estilo_excluido}» solapamientos por estilo excluído.`);
     }

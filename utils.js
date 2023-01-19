@@ -80,6 +80,10 @@ Object.assign(utils, {
         } else {
             return texto === patron;
         }
+    },
+
+    iniciar_servidor: function() {
+        
     }
 
 });
