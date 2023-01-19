@@ -1,0 +1,402 @@
+importo api nativa.
+importo módulo es5 de ruta "fs" creando constante fs.
+importo módulo es5 de ruta "path" creando constante path.
+importo módulo es5 de ruta "http" creando constante http.
+importo módulo es5 de ruta "express" creando constante express.
+importo módulo es5 de ruta "body-parser" creando constante bodyParser.
+importo módulo es5 de ruta "multer" creando constante multer.
+importo módulo es5 de ruta "url" creando constante url.
+importo módulo es5 de ruta __dirname + "/../utils.js" creando constante utils.
+
+asigno fs.promises.exists como una función con (fichero) donde {
+    retorno una promesa con (hecho) donde {
+        hago fs.promises.access(fichero, fs.constants.F_OK)
+            .then(una función donde retorno hecho(true))
+            .catch(una función donde retorno hecho(false)).
+    }.
+}.
+
+creo configuraciones como {
+    propiedad contrasenya como "LQL".
+    propiedad ruta_de_ficheros como path.resolve(process.env.APPDATA o (cuando process.platform es igual que "darwin" entonces process.env.HOME + "/xass" si no process.env.HOME + "/.local/share/xass")).
+}.
+
+si no fs.existsSync(configuraciones.ruta_de_ficheros) {
+    hago fs.mkdirSync(configuraciones.ruta_de_ficheros).
+}.
+
+desacoplo constantes { debug, die, cronometro } a partir de utils.
+creo cronometro_inicial como cronometro().
+creo argumentos_por_defecto como { puerto: 9854 }.
+creo responder_json como una función (respuesta, data o en su defecto {}, cabeceras o en su defecto {}, codigo_de_estado o en su defecto 200) donde {
+    debugo "responder_json".
+    creo cabeceras_http como { "Content-Type": "application/json" } extendido por cabeceras.
+    hago respuesta.writeHead(codigo_de_estado, cabeceras_http).
+    hago respuesta.write(data textualizado).
+    hago respuesta.end().
+}.
+creo responder_error_json como una función (respuesta, error o en su defecto {}, cabeceras o en su defecto {}, codigo_de_estado o en su defecto 500) donde {
+    debugo "responder_error_json".
+    retorno responder_json(respuesta, error, cabeceras, codigo_de_estado).
+}.
+creo redireccionar_peticion como una función (respuesta, destino) donde {
+    debugo "redireccionar_peticion".
+    hago respuesta.writeHead(301, { Location: destino }).
+    retorno respuesta.end().
+}.
+creo autentificar_peticion como una función con (peticion, respuesta) donde {
+    debugo "autentificar_peticion".
+    desacoplo constantes { parametros_publicos } a partir de peticion.entrada_formateada.
+    creo variable autentificacion_final como undefined.
+    creo autentificacion_por_get como parametros_publicos.get("auth") o  parametros_publicos.get("authorization").
+    si autentificacion_por_get no es tipo texto {
+        asigno autentificacion_final como peticion.headers.Authorization o peticion.headers.authorization.
+    } y si no {
+        asigno autentificacion_final como autentificacion_por_get.
+    }.
+    si autentificacion_final no es igual que configuraciones.contrasenya {
+        asigno respuesta.autentificacion como false.
+        asigno peticion.autentificacion como false.
+    } y si no {
+        asigno respuesta.autentificacion como true.
+        asigno peticion.autentificacion como true.
+    }.
+    retorno respuesta.autentificacion.
+}.
+creo exigir_autentificacion como una función con (peticion, pista o en su defecto "operación desconocida") donde {
+    debugo "exigir_autentificacion".
+    si peticion.autentificacion no es igual que true {
+        lanzo un nuevo Error("Cierta operación exige de autentificación para realizarse: " + pista).
+    }.
+}.
+creo formatear_entrada como una función con (peticion) donde {
+    debugo "formatear_entrada".
+    creo url_parseada como url.parse(peticion.url).
+    asigno peticion.entrada_formateada como {
+        propiedad url_parseada como url_parseada.
+        propiedad parametros_publicos como un nuevo URLSearchParams(cuando no no url_parseada.query entonces url_parseada.query si no {}).
+    }.
+}.
+creo sanitizar_fichero_de_biblioteca como una función con (fichero) donde {
+    creo ruta_final como path.resolve(configuraciones.ruta_de_ficheros, fichero).
+    si ruta_final.startsWith(configuraciones.ruta_de_ficheros) {
+        retorno ruta_final.
+    }.
+    lanzo un nuevo Error("El fichero especificado contiene una ruta maliciosa: «" + ruta_final + "»").
+}.
+creo formatear_parametros_xass_x_separar como una función con (peticion) donde {
+    imprimo peticion.body.
+    desacoplo constantes {
+        ficheros,
+        carga_izquierda,
+        carga_derecha,
+        separacion_minima,
+        incluye_estilos,
+        incluye_estilos_por_regexp,
+        excluye_estilos,
+        excluye_estilos_por_regexp
+    } a partir de peticion.body.
+    creo parametros como [].
+    apendizo "-x" en parametros.
+    apendizo "separar" en parametros.
+    si separacion_minima {
+        apendizo "--separacion" en parametros.
+        apendizo separacion_minima en parametros.
+    }.
+    si carga_izquierda {
+        apendizo "--carga-izquierda" en parametros.
+        apendizo carga_izquierda en parametros.
+    }.
+    si carga_derecha {
+        apendizo "--carga-derecha" en parametros.
+        apendizo carga_derecha en parametros.
+    }.
+    si incluye_estilos {
+        si incluye_estilos_por_regexp {
+            apendizo "--incluir-estilo" en parametros.
+            apendizo "/" + incluye_estilos + "/g" en parametros.
+        } y si no {
+            apendizo "--incluir-estilo" en parametros.
+            apendizo incluye_estilos en parametros.
+        }.
+    }.
+    si excluye_estilos {
+        si excluye_estilos_por_regexp {
+            apendizo "--excluir-estilo" en parametros.
+            apendizo "/" + excluye_estilos + "/g" en parametros.
+        } y si no {
+            apendizo "--excluir-estilo" en parametros.
+            apendizo excluye_estilos en parametros.
+        }.
+    }.
+    si ficheros {
+        desde 0 hasta ficheros.length {
+            creo fichero como ficheros[index].
+            apendizo sanitizar_fichero_de_biblioteca(fichero) en parametros.
+        }.
+    }.
+    retorno parametros.
+}.
+creo middlewares como {
+    propiedad factory como {
+        método exigir_autentificacion con (pista) donde {
+            debugo "middlewares.factory.exigir_autentificacion@factory".
+            retorno una función con (peticion, respuesta, siguiente) donde {
+                debugo "middlewares.factory.exigir_autentificacion@middleware".
+                hago exigir_autentificacion(peticion, pista).
+                retorno siguiente().
+            } en errores {
+                retorno responder_error_json(respuesta, error).
+            }.
+        }.
+    }.
+    método guardar_fichero como una función con (peticion, respuesta, siguiente) donde {
+        debugo "middlewares.factory.guardar_fichero@factory".
+        creo middleware_para_guardar_fichero como multer({
+            propiedad storage como multer.diskStorage({
+                método destination con (peticion, fichero, hecho) donde {
+                    debugo "middlewares.factory.guardar_fichero@destination".
+                    retorno hecho(null, configuraciones.ruta_de_ficheros).
+                }.
+                método filename con (peticion, fichero, hecho) donde {
+                    debugo "middlewares.factory.guardar_fichero@filename".
+                    creo ruta_final como path.resolve(configuraciones.ruta_de_ficheros, fichero.originalname).
+                    hago fs.access(ruta_final, fs.constants.F_OK, una función con (error, reok) donde {
+                        si no error retorno hecho({
+                            propiedad name como "Error al subir ficheros".
+                            propiedad message como "Se requiere que el nombre del fichero sea único en el servidor y ya hay un fichero con ese mismo nombre: " + fichero.originalname.
+                            propiedad details como undefined.
+                        }).
+                        si error.errno no es igual que 0-2 retorno hecho({
+                            propiedad name como "Error al subir ficheros".
+                            propiedad message como "Se requiere que el nombre del fichero sea único en el servidor y ya hay un fichero con ese mismo nombre: " + fichero.originalname.
+                            propiedad details como undefined.
+                        }).
+                        hago hecho(null, fichero.originalname).
+                    }).
+                }.
+            }).
+        }).array("fichero", 100).
+        retorno middleware_para_guardar_fichero(peticion, respuesta, una función con (error) donde {
+            debugo "middlewares.factory.guardar_fichero@middleware".
+            imprimo error.
+            si error {
+                retorno responder_error_json(respuesta, error).
+            }.
+            retorno siguiente().
+        }).
+    } en errores {
+        retorno responder_error_json(respuesta, error).
+    }.
+    método formatear_entrada con (peticion, respuesta, siguiente) donde {
+        debugo "middlewares.formatear_entrada".
+        hago formatear_entrada(peticion, respuesta).
+        hago siguiente().
+    } en errores {
+        retorno responder_error_json(respuesta, error).
+    }.
+    método autentificar_peticion con (peticion, respuesta, siguiente) donde {
+        debugo "middlewares.autentificar_peticion".
+        hago autentificar_peticion(peticion, respuesta).
+        hago siguiente().
+    } en errores {
+        retorno responder_error_json(respuesta, error).
+    }.
+}.
+creo controladores como {
+    propiedad comando como {
+        propiedad xass como {
+            propiedad x como {
+                método separar con (peticion, respuesta) donde {
+                    debugo "controladores.comando.xass.x.separar".
+                    creo variable salida como "".
+                    creo parametros_formateados como formatear_parametros_xass_x_separar(peticion).
+                    creo subproceso como require("child_process").spawn(__dirname + "/../xass.bin.js", parametros_formateados, {}).
+                    hago subproceso.stdout.setEncoding("utf-8").
+                    hago subproceso.stdout.on("data", una función con (datos) donde {
+                        si datos.toString().trim() no es igual que "" {
+                            imprimo datos.toString().
+                        }.
+                        asigno salida como salida + datos.toString().
+                    }).
+                    hago subproceso.stderr.setEncoding("utf-8").
+                    hago subproceso.stderr.on("data", una función con (error) donde {
+                        imprimo error.toString().
+                        asigno salida como salida + error.toString().
+                    }).
+                    hago subproceso.on("close", una función donde {
+                        retorno responder_json(respuesta, { salida }).
+                    }).
+                } en errores retorno responder_error_json(respuesta, error).
+            }.
+        }.
+        propiedad os como {
+            método asíncrono listar_comandos con (peticion, respuesta) donde {
+                debugo "controladores.comando.os.listar_comandos".
+            } en errores {
+                retorno responder_error_json(respuesta, error).
+            }.
+            método asíncrono listar_directorio con (peticion, respuesta) donde {
+                debugo "controladores.comando.os.listar_directorio".
+                creo variable ruta como peticion.entrada_formateada.parametros_publicos.get("ruta").
+                si ruta no es tipo texto {
+                    asigno ruta como ".".
+                }.
+                creo ruta_final como path.resolve(configuraciones.ruta_de_ficheros, ruta).
+                si no ruta_final.startsWith(configuraciones.ruta_de_ficheros) {
+                    lanzo un nuevo Error("Se requiere de parámetro «ruta» ser una ruta interior segura para «controladores.comando.os.listar_directorio»").
+                }.
+                creo ficheros como asíncronamente fs.promises.readdir(ruta_final).
+                retorno responder_json(respuesta, { ruta: ruta_final, ficheros }).
+            } en errores {
+                retorno responder_error_json(respuesta, error).
+            }.
+            método asíncrono crear_carpeta con (peticion, respuesta) donde {
+                debugo "controladores.comando.os.crear_carpeta".
+                creo variable ruta como peticion.entrada_formateada.parametros_publicos.get("ruta").
+                si ruta no es tipo texto {
+                    lanzo un nuevo Error("Se requiere de parámetro «ruta» ser tipo texto para «controladores.comando.os.crear_carpeta»").
+                }.
+                creo ruta_final como path.resolve(configuraciones.ruta_de_ficheros, ruta).
+                si no ruta_final.startsWith(configuraciones.ruta_de_ficheros) {
+                    lanzo un nuevo Error("Se requiere de parámetro «ruta» ser una ruta interior segura para «controladores.comando.os.crear_carpeta»").
+                }.
+                creo ya_existe como asíncronamente fs.promises.exists(ruta_final).
+                si ya_existe {
+                    lanzo un nuevo Error("Se requiere de parámetro «ruta» apuntar a un fichero o carpeta que no exista para «controladores.comando.os.crear_carpeta»").
+                }.
+                hago asíncronamente fs.promises.mkdir(ruta_final).
+                retorno responder_json(respuesta, { nueva_carpeta: ruta_final }).
+            } en errores {
+                retorno responder_error_json(respuesta, error).
+            }.
+            método asíncrono eliminar_carpeta con (peticion, respuesta) donde {
+                debugo "controladores.comando.os.eliminar_carpeta".
+                creo variable ruta como peticion.entrada_formateada.parametros_publicos.get("ruta").
+                si ruta no es tipo texto {
+                    lanzo un nuevo Error("Se requiere de parámetro «ruta» ser tipo texto para «controladores.comando.os.eliminar_carpeta»").
+                }.
+                creo ruta_final como path.resolve(configuraciones.ruta_de_ficheros, ruta).
+                si no ruta_final.startsWith(configuraciones.ruta_de_ficheros) {
+                    lanzo un nuevo Error("Se requiere de parámetro «ruta» ser una ruta interior segura para «controladores.comando.os.eliminar_carpeta»").
+                }.
+                creo ya_existe como asíncronamente fs.promises.exists(ruta_final).
+                si no ya_existe {
+                    lanzo un nuevo Error("Se requiere de parámetro «ruta» apuntar a una carpeta que sí exista para «controladores.comando.os.eliminar_carpeta»").
+                }.
+                creo lstats como asíncronamente fs.promises.lstat(ruta_final).
+                si no lstats.isDirectory() {
+                    lanzo un nuevo Error("Se requiere de parámetro «ruta» apuntar a una carpeta que sí exista (como carpeta) para «controladores.comando.os.eliminar_carpeta»").
+                }.
+                creo salida como fs.rmdir(ruta_final).
+                retorno responder_json(respuesta, { carpeta_eliminada: ruta_final }).
+            } en errores {
+                retorno responder_error_json(respuesta, error).
+            }.
+            método asíncrono eliminar_fichero con (peticion, respuesta) donde {
+                debugo "controladores.comando.os.eliminar_fichero".
+                creo variable ruta como peticion.entrada_formateada.parametros_publicos.get("ruta").
+                si ruta no es tipo texto {
+                    lanzo un nuevo Error("Se requiere de parámetro «ruta» ser tipo texto para «controladores.comando.os.eliminar_fichero»").
+                }.
+                creo ruta_final como path.resolve(configuraciones.ruta_de_ficheros, ruta).
+                si no ruta_final.startsWith(configuraciones.ruta_de_ficheros) {
+                    lanzo un nuevo Error("Se requiere de parámetro «ruta» ser una ruta interior segura para «controladores.comando.os.eliminar_fichero»").
+                }.
+                creo ya_existe como asíncronamente fs.promises.exists(ruta_final).
+                si no ya_existe {
+                    lanzo un nuevo Error("Se requiere de parámetro «ruta» apuntar a un fichero que sí exista para «controladores.comando.os.eliminar_fichero»").
+                }.
+                creo lstats como asíncronamente fs.promises.lstat(ruta_final).
+                si no lstats.isFile() {
+                    lanzo un nuevo Error("Se requiere de parámetro «ruta» apuntar a un fichero que sí exista (como carpeta) para «controladores.comando.os.eliminar_fichero»").
+                }.
+                creo salida como asíncronamente fs.promises.unlink(ruta_final).
+                retorno responder_json(respuesta, { carpeta_eliminada: ruta_final }).
+            } en errores {
+                retorno responder_error_json(respuesta, error).
+            }.
+            método asíncrono subir_fichero con (peticion, respuesta) donde {
+                debugo "controladores.comando.os.subir_fichero".
+                imprimo require("util").inspect(peticion.files).
+                retorno responder_json(respuesta, { fichero_subido: peticion.files }).
+            } en errores {
+                retorno responder_error_json(respuesta, error).
+            }.
+            método asíncrono bajar_fichero con (peticion, respuesta) donde {
+                debugo "controladores.comando.os.bajar_fichero".
+                creo variable ruta como peticion.entrada_formateada.parametros_publicos.get("ruta").
+                si ruta no es tipo texto {
+                    lanzo un nuevo Error("Se requiere de parámetro «ruta» ser tipo texto para «controladores.comando.os.eliminar_fichero»").
+                }.
+                creo ruta_final como path.resolve(configuraciones.ruta_de_ficheros, ruta).
+                si no ruta_final.startsWith(configuraciones.ruta_de_ficheros) {
+                    lanzo un nuevo Error("Se requiere de parámetro «ruta» ser una ruta interior segura para «controladores.comando.os.eliminar_fichero»").
+                }.
+                creo ya_existe como asíncronamente fs.promises.exists(ruta_final).
+                si no ya_existe {
+                    lanzo un nuevo Error("Se requiere de parámetro «ruta» apuntar a un fichero que sí exista para «controladores.comando.os.eliminar_fichero»").
+                }.
+                creo lstats como asíncronamente fs.promises.lstat(ruta_final).
+                si no lstats.isFile() {
+                    lanzo un nuevo Error("Se requiere de parámetro «ruta» apuntar a un fichero que sí exista (como carpeta) para «controladores.comando.os.eliminar_fichero»").
+                }.
+                retorno respuesta.download(ruta_final).
+            } en errores {
+                retorno responder_error_json(respuesta, error).
+            }.
+            método asíncrono copiar_fichero con (peticion, respuesta) donde {
+                debugo "controladores.comando.os.copiar_fichero".
+            } en errores {
+                retorno responder_error_json(respuesta, error).
+            }.
+        }.
+    }.
+}.
+exporto como módulo es5 una función con (argumentos_de_usuario o en su defecto {}) donde {
+    debugo "xass -x interfaz".
+    creo argumentos como {} extendido por argumentos_por_defecto también extendido por argumentos_de_usuario.
+    creo app como express().
+    hago app.use("*", require("body-parser").urlencoded({ extended: true })).
+    hago app.use("*", require("body-parser").json()).
+    hago app.use("/static", express.static(__dirname + "/lib/interfaz")).
+    hago app.use("/", middlewares.formatear_entrada).
+    hago app.use("/", middlewares.autentificar_peticion).
+    hago app.use("/comando/os/listar_comandos", controladores.comando.os.listar_comandos).
+    hago app.use("/comando/os/listar_directorio", [ middlewares.factory.exigir_autentificacion("listar_directorio") ], controladores.comando.os.listar_directorio).
+    hago app.use("/comando/os/crear_carpeta", controladores.comando.os.crear_carpeta).
+    hago app.use("/comando/os/eliminar_carpeta", controladores.comando.os.eliminar_carpeta).
+    hago app.use("/comando/os/eliminar_fichero", [ middlewares.factory.exigir_autentificacion("eliminar_fichero") ], controladores.comando.os.eliminar_fichero).
+    hago app.use("/comando/os/subir_fichero", [ middlewares.factory.exigir_autentificacion("subir_fichero"), middlewares.guardar_fichero ], controladores.comando.os.subir_fichero).
+    hago app.use("/comando/os/bajar_fichero", controladores.comando.os.bajar_fichero).
+    hago app.use("/comando/os/copiar_fichero", controladores.comando.os.copiar_fichero).
+    hago app.use("/comando/xass/x/separar", [ middlewares.factory.exigir_autentificacion("xass -x separar") ], controladores.comando.xass.x.separar).
+    creo servidor_http como http.createServer(app).
+    creo servidor_socket como un servidor socket.io a partir de servidor_http con servidor que {
+        en evento "connection" está usando una función con (argumentos) donde {
+            debugo "servidor_socket.{evento=connection}".
+            desacoplo constantes { id } a partir de argumentos[0].
+        }.
+    } con socket que {
+        en evento "disconnect" está usando una función con (mensaje, contexto) donde {
+            debugo "servidor_socket.cliente.{evento=disconnect}".
+            imprimo `Se desconectó socket con ID: ${contexto.socket.id}`.
+        }.
+    }.
+    hago servidor_http.listen(argumentos_por_defecto.puerto, una función con () donde {
+        debugo "servidor_http.listen@started".
+        creo direccion como "127.0.0.1".
+        creo protocolo como "http".
+        imprimo `Servidor «xass» escuchando en: ${protocolo}://${direccion}:${argumentos.puerto}`.
+        hago require("child_process").exec(`firefox "${protocolo}://${direccion}:${argumentos.puerto}"`, una función (error) donde {
+            debugo "servidor_http.listen@started@error_launching_firefox".
+            si error {
+                hago require("child_process").exec(`google-chrome "${protocolo}://${direccion}:${argumentos.puerto}"`).
+            }.
+        }).
+    }).
+} en errores {
+    imprimo "Error en comando «xass -x interfaz»:".
+    imprimo error.
+    lanzo error.
+}.

@@ -1,0 +1,985 @@
+Ejecutable como documento HTML5
+    con autor allnulled
+    con nombre xass-ui
+    con versión 1.0.0
+<head>
+    <title>xass-ui</title>
+    <meta charset="utf8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
+    <script src="./js/socket.io.min.js"></script>
+    <style>
+    html,body { padding: 0px !important; margin: 0px !important; }
+    .contenedor_de_menu_de_navegacion { display: none; }
+    .contenedor_de_menu_de_navegacion.seleccionado { display: block; }
+
+    ul,li { padding: 0px; margin: 0px; list-style: none; }
+    input[type=file] { padding: 3px; }
+    .fuente_titulo { font-size: 15px; font-weight: bold; }
+    .menu_de_navegacion { position: relative; }
+    .menu_de_navegacion > .opciones_de_menu { position: absolute; top: 0; left: 0; background-color: white; border: 1px solid #333; border-top: 1px solid #333; z-index: 999; }
+    .opciones_de_menu { min-width: 150px; }
+    .opcion_de_menu {}
+    .CapaScrolable { overflow: scroll; position: relative; min-width: 100%; min-height: 100px; resize: vertical; border: 1px solid #CCC; }
+    .capa_scrolable_interna { position: absolute; top: 0; left: 0; }
+    .control_de_opcion_textual { color: #888; cursor: pointer; }
+    .control_de_opcion_textual.seleccionado { color: black; text-decoration: underline; }
+    .width_100x100 { width: 100%; }
+    .text_align_left { text-align: left; }
+    .Tarjeta { border: 1px solid #888; }
+    .fondo_b { background-color: #E8E8E8; color: black; }
+    .text_align_right { text-align: right; }
+    .boton_pequenyo { padding: 3px; }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="file"],
+    .ControlParaBoton { border-radius: 0pt; border: none; background-color: #CCC; }
+    
+    input[type="text"]:hover,
+    input[type="number"]:hover,
+    input[type="file"]:hover,
+    .ControlParaBoton:hover { background-color: #DDD; }
+    
+    .ControlParaBoton[disabled]:hover { background-color: inherit; }
+    .subnodos_de_opcion { padding-left: 5px; }
+    .estilo_consola { font-size: 8px; border-radius: 2pt; box-shadow: 0 0 2px white; background-color: black; color: #0F0; }
+    .fondo_de_navegacion {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0,0,0,0.8);
+      z-index: 999;
+    }
+    .BarraSuperior { z-index: 1000; position: relative; }
+    </style>
+    <style>
+    .PuertoDeNotificaciones {
+      position: fixed;
+      top: auto;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      max-height: 150px;
+      overflow: scroll;
+      background-color: #AAA;
+    }
+    .pie_de_notificacion {
+      text-align: right;
+    }
+    .cuerpo_de_notificacion {
+      font-size: 9px;
+    }
+    </style>
+</head>
+<body><div id="app"></div></body>.
+
+importo api nativa.
+
+debugo "Iniciando aplicación xass-ui".
+
+creo Gestor_de_temas como {
+  método cambiar_tema_claro_u_oscuro donde {
+    debugo "Gestor_de_temas.cambiar_tema_claro_u_oscuro".
+    creo tags_seleccionados como document.querySelectorAll("style#dark-theme").
+    creo tag_de_estilo_oscuro como tags_seleccionados[0].
+    si tag_de_estilo_oscuro {
+      debugo "Gestor_de_temas.cambiar_tema_claro_u_oscuro@de_oscuro_a_claro".
+      hago tag_de_estilo_oscuro.remove().
+    } y si no {
+      debugo "Gestor_de_temas.cambiar_tema_claro_u_oscuro@de_claro_a_oscuro".
+      creo variable contenido_de_tag como '<style id="dark-theme">'.
+      incremento contenido_de_tag en un código en css con {
+        html { background-color: #222; color: white; }
+        input[type="text"],
+        input[type="number"],
+        input[type="file"],
+        .ControlParaBoton { background-color: #111; color: white; box-shadow: 0px 0px 1px #888; }
+        input[type="text"]:hover,
+        input[type="number"]:hover,
+        input[type="file"]:hover,
+        .ControlParaBoton:hover { background-color: #DDD; color: black; }
+        .control_de_opcion_textual.seleccionado { color: white; }
+        a { color: #03c4ff; }
+        a:visited { color: #f703ff; }
+      }.
+      incremento contenido_de_tag en '</style>'.
+      creo elemento_tema_oscuro como un elemento html con (contenido_de_tag).
+      imprimo elemento_tema_oscuro.
+      hago document.head.appendChild(elemento_tema_oscuro).
+    }.
+  }.
+}.
+
+creo Gestor_de_autentificacion como {
+  propiedad token como "LQL".
+}.
+
+creo socket_cliente como un cliente socket.io el cual {
+  en evento "connection" está usando una función con (socket) donde {
+    debugo "socket_cliente.{evento=connection}".
+    imprimo "Conectado!".
+  }.
+  en evento "---" está usando una función con (datos, contexto) donde {
+    debugo "socket_cliente.{evento=---}".
+  }.
+}.
+
+creo utilidades como {
+  método de_fecha_a_texto con (fecha) donde {
+    debugo "utilidades.de_fecha_a_texto".
+    retorno un formateo de fecha a texto a partir de fecha.
+  }.
+  método de_ruta_a_extension con (ruta) donde {
+    debugo "utilidades.de_ruta_a_extension".
+    creo ruta_invertida como ruta.split("").reverse().join("").
+    creo posicion como ruta_invertida.indexOf(".").
+    retorno ruta_invertida.substr(0, posicion).split("").reverse().join("").
+  }.
+  método de_ruta_a_nombre_de_fichero con (ruta) donde {
+    debugo "utilidades.de_ruta_a_nombre_de_fichero".
+    creo ruta_invertida como ruta.split("").reverse().join("").
+    creo posicion como ruta_invertida.indexOf("/").
+    retorno ruta_invertida.substr(0, posicion).split("").reverse().join("").
+  }.
+  método gestionar_error con (error) donde {
+    debugo "utilidades.gestionar_error".
+    imprimo error.
+    si error.name es igual que "AxiosError" {
+      creo variable mensaje_de_error como "".
+      si error.response {
+        incremento mensaje_de_error en `Error de petición (0): `.
+        si error.response.data {
+          incremento mensaje_de_error en `${error.response.data.name} ${error.response.data.message} [código:${error.response.status}]`.
+          hago Vue.prototype.$notificaciones.notificar_error(error.response.data).
+        }.
+      } pero si error.request {
+        incremento mensaje_de_error en `Error de petición (1): ${JSON.stringify(error)}`.
+        imprimo "Error de petición (1)".
+        imprimo error.
+        hago Vue.prototype.$notificaciones.notificar_error(error).
+      } y si no {
+        incremento mensaje_de_error en `Error de petición (2): ${JSON.stringify(error)}`.
+        imprimo "Error de petición (2)".
+        imprimo error.
+        hago Vue.prototype.$notificaciones.notificar_error(error).
+      }.
+    } y si no {
+      hago Vue.prototype.$notificaciones.notificar_error(error).
+    }.
+  }.
+  método ruta_de_servidor con (url) donde {
+    debugo "utilidades.ruta_de_servidor".
+    retorno `http://127.0.0.1:9854${url}`.
+  }.
+}.
+
+creo comandos_remotos como {
+  propiedad xass_x_separar como {
+    propiedad url como utilidades.ruta_de_servidor("/comando/xass/x/separar").
+    propiedad accion como una función asíncrona con (datos) donde {
+      creo respuesta como asíncronamente una petición http
+        con url comandos_remotos.xass_x_separar.url
+        con método "POST"
+        con cuerpo datos
+        con cabeceras { "Authorization": Gestor_de_autentificacion.token, "Content-Type": "application/json" }.
+      retorno respuesta.
+    } en errores hago utilidades.gestionar_error(error).
+  }.
+  propiedad os_listar_comandos como {
+    propiedad url como utilidades.ruta_de_servidor("/comando/os/listar_comandos").
+    propiedad accion como una función.
+  }.
+  propiedad os_listar_directorio como {
+    propiedad url como utilidades.ruta_de_servidor("/comando/os/listar_directorio").
+    método asíncrono accion donde {
+      debugo "comandos_remotos.os_listar_directorio.accion".
+      creo respuesta como asíncronamente una petición http
+        con url comandos_remotos.os_listar_directorio.url
+        con método "POST"
+        con cuerpo {}
+        con cabeceras { "Authorization": Gestor_de_autentificacion.token, "Content-Type": "application/json" }.
+      retorno respuesta.data.
+    } en errores hago utilidades.gestionar_error(error).
+  }.
+  propiedad os_crear_carpeta como {
+    propiedad url como utilidades.ruta_de_servidor("/comando/os/crear_carpeta").
+    método asíncrono accion donde {
+      debugo "comandos_remotos.os_crear_carpeta.accion".
+    }.
+  }.
+  propiedad os_eliminar_carpeta como {
+    propiedad url como utilidades.ruta_de_servidor("/comando/os/eliminar_carpeta").
+    método asíncrono accion donde {
+      debugo "comandos_remotos.os_eliminar_carpeta.accion".
+    }.
+  }.
+  propiedad os_eliminar_fichero como {
+    propiedad url como utilidades.ruta_de_servidor("/comando/os/eliminar_fichero").
+    método asíncrono accion con (fichero) donde {
+      debugo "comandos_remotos.os_eliminar_fichero.accion".
+      creo respuesta como asíncronamente una petición http
+        con url "/comando/os/eliminar_fichero?ruta=" + encodeURIComponent(fichero)
+        con método "POST"
+        con cuerpo {}
+        con cabeceras { "Authorization": Gestor_de_autentificacion.token, "Content-Type": "application/json" }.
+      retorno respuesta.
+    } en errores hago utilidades.gestionar_error(error).
+  }.
+  propiedad os_subir_fichero como {
+    propiedad url como utilidades.ruta_de_servidor("/comando/os/subir_fichero").
+    método asíncrono accion con (fichero) donde {
+      debugo "comandos_remotos.os_subir_fichero.accion".
+      creo formulario como un nuevo FormData().
+      hago formulario.append("fichero", fichero).
+      creo respuesta como asíncronamente una petición http
+        con url comandos_remotos.os_subir_fichero.url
+        con método "POST"
+        con cuerpo formulario
+        con cabeceras { "Content-type": "multipart/form-data", "Authorization": Gestor_de_autentificacion.token }
+        en errores hago utilidades.gestionar_error(error).
+      retorno respuesta.
+    } en errores hago utilidades.gestionar_error(error).
+  }.
+  propiedad os_bajar_fichero como {
+    propiedad url como utilidades.ruta_de_servidor("/comando/os/bajar_fichero").
+    método asíncrono accion donde {
+      debugo "comandos_remotos.os_bajar_fichero.accion".
+    }.
+  }.
+  propiedad os_copiar_fichero como {
+    propiedad url como utilidades.ruta_de_servidor("/comando/os/copiar_fichero").
+    método asíncrono accion donde {
+      debugo "comandos_remotos.os_copiar_fichero.accion".
+    }.
+  }.
+}.
+
+creo opciones_de_props_de_control_por_defecto como {
+  propiedad valorInicial como "".
+  propiedad tiposDeValorInicial como [String,Number,Boolean,Object,Function,undefined].
+}.
+
+creo props_de_control_tipico como una función con (opciones_de_usuario o en su defecto {}) donde {
+  creo opciones como {} extendido por opciones_de_props_de_control_por_defecto también extendido por opciones_de_usuario.
+  retorno {
+    propiedad contenedor como {
+      propiedad type como Object.
+      propiedad required como true.
+    }.
+    propiedad propiedad como {
+      propiedad type como String.
+      propiedad required como true.
+    }.
+    propiedad valorInicial como {
+      propiedad type como opciones.tiposDeValorInicial.
+      propiedad default como opciones.valorInicial.
+    }.
+    propiedad relleno como {
+      propiedad type como String.
+      propiedad default como "".
+    }.
+  }.
+}.
+
+creo watch_de_control_tipico como {
+  método valor_interno con (nuevo_valor) donde {
+    debugo "watch_de_control_tipico.valor_interno".
+    asigno this.contenedor[this.propiedad] como nuevo_valor.
+  }.
+}.
+
+creo PaginaDePantallaConfiguraciones como un componente vue2 con nombre "PaginaDePantallaConfiguraciones" con plantilla {
+  <div class="Component">
+    <LineaHorizontal class="marginado_vertical_2" style="margin-top: 0;"></LineaHorizontal>
+    <div class="fuente_titulo">Configuraciones</div>
+    <LineaHorizontal class="marginado_vertical_2" style="margin-bottom: 0;"></LineaHorizontal>
+    <div class="espaciado_2">
+      <EtiquetaDeControl>Cambiar tema estilístico claro/oscuro:</EtiquetaDeControl>
+      <ControlParaBoton v-on:click.native="cambiar_tema">Cambiar tema</ControlParaBoton>
+    </div>
+  </div>
+} con lógica {
+  retorno {
+    método data donde {
+      retorno {}.
+    }.
+    propiedad methods como {
+      método cambiar_tema como Gestor_de_temas.cambiar_tema_claro_u_oscuro.
+    }.
+  }.
+}.
+
+creo PaginaDePantallaAyuda como un componente vue2 con nombre "PaginaDePantallaAyuda" con plantilla {
+  <div class="Component">
+    <LineaHorizontal class="marginado_vertical_2" style="margin-top: 0;"></LineaHorizontal>
+    <div class="fuente_titulo">Ayuda</div>
+    <LineaHorizontal class="marginado_vertical_2" style="margin-bottom: 0;"></LineaHorizontal>
+    <div class="espaciado_2">
+      <ul>
+        <li>
+          <span> · Página de Github: </span>
+          <a href="https://github.com/allnulled/xass">https://github.com/allnulled/xass</a>
+        </li>
+        <li>
+          <span> · Página de NPM: </span>
+          <a href="https://www.npmjs.com/package/@allnulled/xass">https://www.npmjs.com/package/@allnulled/xass</a>
+        </li>
+        <li>
+          <span> · Correo del autor: </span>
+          <a href="mailto:carlcarlsonc18@gmail.com">carlcarlsonc18@gmail.com</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+}.
+
+creo BarraSuperior como un componente vue2 con nombre "BarraSuperior" con plantilla {
+  <div class="BarraSuperior Component">
+    <div style="display: table; width: 100%;">
+      <div style="display: table-cell;">
+        <slot name="esquina"></slot>
+      </div>
+      <div style="display: table-cell; width: 100%;">
+        <slot name="barra"></slot>
+      </div>
+    </div>
+    <div class="contenedor_de_menu_de_navegacion" :class="{seleccionado: $root.esta_mostrando_menu}">
+      <slot name="menu"></slot>
+    </div>
+  </div>
+}.
+
+creo PaginaDeInicio como un componente vue2 con nombre "PaginaDeInicio" con plantilla {
+  <div class="PaginaDeInicio Component">
+    <LineaHorizontal class="marginado_vertical_2" style="margin-top: 0;"></LineaHorizontal>
+    <div class="fuente_titulo">Inicio</div>
+    <LineaHorizontal class="marginado_vertical_2" style="margin-bottom: 0;"></LineaHorizontal>
+    <div class="espaciado_2">
+      <ul>
+        <li>
+          <router-link to="/pantalla/explorador">· Explorador de ficheros</router-link>
+        </li>
+        <li>
+          <router-link to="/comando/xass/separar">· Separar subtítulos</router-link>
+        </li>
+        <li>
+          <router-link to="/pantalla/configuraciones">· Configuraciones</router-link>
+        </li>
+        <li>
+          <router-link to="/pantalla/ayuda">· Ayuda</router-link>
+        </li>
+      </ul>
+    </div>
+  </div>
+}.
+
+creo CapaScrolable como un componente vue2 con nombre "CapaScrolable" con plantilla {
+  <div class="CapaScrolable Component">
+    <div class="capa_scrolable_interna">
+      <slot></slot>
+    </div>
+  </div>
+}.
+
+creo ControlParaFichero2 como un componente vue2 con nombre "ControlParaFichero2" con plantilla {
+  <div class="ControlParaFichero2">
+    <input style="width: 100%;" type="file" multiple="true" v-on:change="establecer_valor" :accept="extensiones" />
+    <template v-if="valor_interno">
+      <EtiquetaDeControl>Ficheros seleccionados:</EtiquetaDeControl>
+      <CapaScrolable class="marginado_top_2">
+        <table>
+          <thead>
+            <tr>
+              <td>Extensión</td>
+              <td>Tamaño</td>
+              <td>Última modificación</td>
+              <td>Fichero</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(fichero, ficheroIndex) in valor_interno" v-bind:key="'fichero-para-separar-' + ficheroIndex">
+              <td><span class="no_contraer_texto">{{ fichero.type ? fichero.type : $utils.de_ruta_a_extension(fichero.path) }}</span></td>
+              <td><span class="no_contraer_texto">{{ fichero.size / 1000 }}KB</span></td>
+              <td><span class="no_contraer_texto">{{ $utils.de_fecha_a_texto(fichero.lastModifiedDate) }}</span></td>
+              <td><span class="no_contraer_texto">{{ fichero.name }}</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </CapaScrolable>
+    </template>
+  </div>
+} con lógica {
+  retorno {
+    propiedad props como {
+      propiedad extensiones como {
+        propiedad type como String.
+        propiedad default como "*".
+      }.
+      ...incluyo props_de_control_tipico()
+    }.
+    método data donde {
+      debugo "ControlParaFichero2.data".
+      retorno {
+        propiedad valor_interno como undefined.
+      }.
+    }.
+    propiedad methods como {
+      método establecer_valor como una función con (valor) donde {
+        debugo "ControlParaFichero2.methods.establecer_valor".
+        asigno this.valor_interno como valor.target.files o [].
+        imprimo this.valor_interno.
+      }.
+    }.
+    propiedad watch como {
+      ...incluyo watch_de_control_tipico
+    }.
+  }.
+}.
+
+creo ControlParaNumero2 como un componente vue2 con nombre "ControlParaNumero2" con plantilla {
+  <div class="ControlParaNumero2">
+    <div style="display: table; width: 100%;">
+      <div style="display: table-cell; width: 1%;">
+        <ControlParaBoton v-on:click.native="decrementar"> « </ControlParaBoton>
+      </div>
+      <div style="display: table-cell; width: 100%;" class="espaciado_horizontal_2">
+        <input style="width: 100%;" type="number" v-model="valor_interno" :placeholder="relleno" :step="intervalos" />
+      </div>
+      <div style="display: table-cell; width: 1%;">
+        <ControlParaBoton v-on:click.native="incrementar"> » </ControlParaBoton>
+      </div>
+    </div>
+  </div>
+} con lógica {
+  retorno {
+    propiedad props como {
+      propiedad intervalos como {
+        propiedad type como Number.
+        propiedad default como 1.
+      }.
+      ...incluyo props_de_control_tipico({ valorInicial: 0, tiposDeValorInicial: Number })
+    }.
+    método data donde {
+        debugo "ControlParaNumero2.data".
+      retorno {
+        propiedad valor_interno como this.valorInicial.
+      }.
+    }.
+    propiedad methods como {
+      método incrementar donde {
+        debugo "ControlParaNumero2.methods.incrementar".
+        asigno this.valor_interno como Math.round((this.valor_interno + this.intervalos) * 100) / 100.
+      }.
+      método decrementar donde {
+        debugo "ControlParaNumero2.methods.decrementar".
+        asigno this.valor_interno como Math.round((this.valor_interno - this.intervalos) * 100) / 100.
+      }.
+    }.
+    propiedad watch como {
+      ...incluyo watch_de_control_tipico
+    }.
+  }.
+}.
+
+creo ControlParaTexto2 como un componente vue2 con nombre "ControlParaTexto2" con plantilla {
+  <div class="ControlParaTexto2">
+    <input style="width: 100%;" type="text" v-model="valor_interno" :placeholder="relleno" />
+  </div>
+} con lógica {
+  retorno {
+    propiedad props como {
+      ...incluyo props_de_control_tipico({ valorInicial: "", tiposDeValorInicial: String })
+    }.
+    método data donde {
+      debugo "ControlParaTexto2.data".
+      retorno {
+        propiedad valor_interno como "".
+      }.
+    }.
+    propiedad watch como {
+      ...incluyo watch_de_control_tipico
+    }.
+  }.
+}.
+
+creo ControlParaTextoLargo2 como un componente vue2 con nombre "ControlParaTextoLargo2" con plantilla {
+  <div class="ControlParaTextoLargo2 Component">
+    <textarea style="width: 100%;" v-model="valor_interno" :placeholder="relleno"></textarea>
+  </div>
+} con lógica {
+  retorno {
+    propiedad props como {
+      ...incluyo props_de_control_tipico({ valorInicial: "", tiposDeValorInicial: String })
+    }.
+    método data donde {
+      debugo "ControlParaTextoLargo2.data".
+      retorno {
+        propiedad valor_interno como "".
+      }.
+    }.
+    propiedad watch como {
+      ...incluyo watch_de_control_tipico
+    }.
+  }.
+}.
+
+creo Cargando como un componente vue2 con nombre "Cargando" con plantilla {
+  <div class="Cargando Component">
+    <slot></slot>
+  </div>
+}.
+
+creo Tarjeta como un componente vue2 con nombre "Tarjeta" con plantilla {
+  <div class="Tarjeta Component">
+    <slot></slot>
+  </div>
+}.
+
+creo PaginaDePantallaExplorador como un componente vue2 con nombre "PaginaDePantallaExplorador" con plantilla {
+  <div class="PaginaDePantallaExplorador Component">
+    <LineaHorizontal class="marginado_vertical_2" style="margin-top: 0;"></LineaHorizontal>
+    <div class="fuente_titulo">Explorador de ficheros</div>
+    <LineaHorizontal class="marginado_vertical_2" style="margin-bottom: 0;"></LineaHorizontal>
+    <div class="espaciado_2">
+      <EtiquetaDeControl>Ficheros subidos:</EtiquetaDeControl>
+      <Cargando v-if="!Array.isArray(ficheros_para_explorar_internos)">Cargando ficheros del servidor...</Cargando>
+      <template v-else-if="ficheros_para_explorar_internos.length">
+        <CapaScrolable>
+          <table>
+            <tbody v-for="(fichero, ficheroIndex) in ficheros_para_explorar_internos" v-bind:key="'explorador-de-ficheros-fichero-' + ficheroIndex">
+              <tr>
+                <td>
+                  <template v-if="fichero.endsWith('.ass')">
+                    <ControlParaBoton class="boton_pequenyo" v-on:click.native="() => descargar_fichero(fichero)">Descargar</ControlParaBoton>
+                  </template>
+                </td>
+                <td>
+                </td>
+                <td class="no_contraer_texto">{{ ficheroIndex + 1 }}</td>
+                <td class="no_contraer_texto">{{ fichero }}</td>
+                <td>
+                  <template v-if="fichero.endsWith('.ass')">
+                    <ControlParaBoton class="boton_pequenyo" v-on:click.native="() => eliminar_fichero(fichero)">Eliminar</ControlParaBoton>
+                  </template>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </CapaScrolable>
+      </template>
+      <template v-else-if="Array.isArray(ficheros_para_explorar_internos)">
+        No se encontraron ficheros en el servidor actualmente.
+      </template>
+      <Tarjeta class="espaciado_2 espaciado_arriba_0 marginado_arriba_2 fondo_b">
+        <EtiquetaDeControl>Ficheros para subir:</EtiquetaDeControl>
+        <ControlParaFichero2 :contenedor="this" propiedad="ficheros_para_subir_internos" extensiones=".ass" ref="ficheros_para_subir"></ControlParaFichero2>
+        <template v-if="ficheros_para_subir_internos && ficheros_para_subir_internos.length">
+          <EtiquetaDeControl>Estado de las subidas:</EtiquetaDeControl>
+          <CapaScrolable>
+            <table>
+              <tbody v-for="(fichero, ficheroIndex) in ficheros_para_subir_internos" v-bind:key="'explorador-de-ficheros-fichero-' + ficheroIndex">
+                <tr>
+                  <td>
+                    <template v-if="fichero.name.endsWith('.ass')">
+                      <ControlParaBoton v-if="fichero.estado_de_la_subida === 'subiendo'" disabled="true">Subiendo</ControlParaBoton>
+                      <ControlParaBoton v-else-if="fichero.estado_de_la_subida === 'completado'" disabled="true">Completado</ControlParaBoton>
+                      <ControlParaBoton v-else v-on:click.native="() => subir_fichero(fichero)">Subir</ControlParaBoton>
+                    </template>
+                  </td>
+                  <td class="no_contraer_texto">{{ ficheroIndex + 1 }}</td>
+                  <td class="no_contraer_texto">{{ fichero.name }}</td>
+                  <td class="no_contraer_texto">{{ $utils.de_fecha_a_texto(new Date(fichero.lastModified)) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </CapaScrolable>
+          <div class="marginado_arriba_2 text_align_right">
+            <ControlParaBoton class="no_contraer_texto" v-on:click.native="limpiar_ficheros">Cancelar</ControlParaBoton>
+            <ControlParaBoton class="no_contraer_texto" v-on:click.native="subir_ficheros">Subir todos</ControlParaBoton>
+          </div>
+        </template>
+      </Tarjeta>
+    </div>
+  </div>
+} con lógica {
+  retorno {
+    método data donde {
+      debugo "PaginaDePantallaExplorador.data".
+      retorno {
+        propiedad ficheros_para_subir_internos como [].
+        propiedad ficheros_para_explorar_internos como undefined.
+      }.
+    }.
+    propiedad methods como {
+      método asíncrono subir_fichero con (fichero) donde {
+        debugo "PaginaDePantallaExplorador.methods.subir_fichero".
+        asigno fichero.estado_de_la_subida como "subiendo".
+        hago this.$forceUpdate(true).
+        creo respuesta como asíncronamente comandos_remotos.os_subir_fichero.accion(fichero).
+        asigno fichero.estado_de_la_subida como "completado".
+        hago asíncronamente this.refrescar_ficheros().
+        hago this.$forceUpdate(true).
+        retorno respuesta.
+      } en errores hago utilidades.gestionar_error(error).
+      método asíncrono subir_ficheros donde {
+        debugo "PaginaDePantallaExplorador.methods.subir_ficheros".
+        desde 0 hasta this.ficheros_para_subir_internos.length {
+          creo fichero como this.ficheros_para_subir_internos[index].
+          asigno fichero.estado_de_la_subida como "sin empezar".
+          hago asíncronamente this.subir_fichero(fichero).
+          hago asíncronamente this.refrescar_ficheros().
+        }.
+      } en errores hago utilidades.gestionar_error(error).
+      método asíncrono descargar_fichero con (fichero) donde {
+        debugo "PaginaDePantallaExplorador.methods.descargar_fichero".
+        asigno window.location.href como "/comando/os/bajar_fichero?ruta=" + encodeURIComponent(fichero).
+      } en errores hago utilidades.gestionar_error(error).
+      método asíncrono eliminar_fichero con (fichero) donde {
+        debugo "PaginaDePantallaExplorador.methods.eliminar_fichero".
+        hago asíncronamente comandos_remotos.os_eliminar_fichero.accion(fichero).
+        hago asíncronamente this.refrescar_ficheros().
+      } en errores hago utilidades.gestionar_error(error).
+      método asíncrono limpiar_ficheros donde {
+        debugo "PaginaDePantallaExplorador.methods.limpiar_ficheros".
+        asigno this.ficheros_para_subir_internos como [].
+      } en errores hago utilidades.gestionar_error(error).
+      método asíncrono refrescar_ficheros donde {
+        debugo "PaginaDePantallaExplorador.methods.refrescar_ficheros".
+        desacoplo constantes { ficheros } a partir de asíncronamente comandos_remotos.os_listar_directorio.accion().
+        asigno this.ficheros_para_explorar_internos como ficheros.
+      }.
+    }.
+    propiedad watch como {
+      
+    }.
+    método asíncrono mounted donde {
+      debugo "PaginaDePantallaExplorador.mounted".
+      hago asíncronamente this.refrescar_ficheros().
+    } en errores hago utilidades.gestionar_error(error).
+  }.
+}.
+
+creo ControlParaSelectorDeFicherosDeServidor como un componente vue2 con nombre "ControlParaSelectorDeFicherosDeServidor" con plantilla {
+  <div class="ControlParaSelectorDeFicherosDeServidor Component">
+    <div class="espaciado_0">
+      <Cargando v-if="!Array.isArray(ficheros_para_explorar_internos)">Cargando ficheros del servidor...</Cargando>
+      <template v-else-if="ficheros_para_explorar_internos.length">
+        <CapaScrolable>
+          <table>
+            <tbody v-for="(fichero, ficheroIndex) in ficheros_para_explorar_internos" v-bind:key="'explorador-de-ficheros-fichero-' + ficheroIndex">
+              <tr>
+                <td>
+                  <template v-if="fichero.endsWith('.ass')">
+                  </template>
+                </td>
+                <td class="no_contraer_texto">{{ ficheroIndex + 1 }}</td>
+                <td class="no_contraer_texto">
+                  <label>
+                    <input type="checkbox" v-model="ficheros_seleccionados_internos" :value="fichero" />
+                    <span>{{ fichero }}</span>
+                  </label>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </CapaScrolable>
+      </template>
+      <template v-else-if="Array.isArray(ficheros_para_explorar_internos)">
+        No se encontraron ficheros en el servidor actualmente.
+      </template>
+    </div>
+  </div>
+} con lógica {
+  retorno {
+    propiedad props como {
+      ...incluyo props_de_control_tipico()
+    }.
+    método data donde {
+      debugo "ControlParaSelectorDeFicherosDeServidor.data".
+      retorno {
+        propiedad ficheros_para_explorar_internos como undefined.
+        propiedad ficheros_seleccionados_internos como [].
+      }.
+    }.
+    propiedad methods como {
+      método asíncrono subir_fichero con (fichero) donde {
+        debugo "PaginaDePantallaExplorador.methods.subir_fichero".
+        asigno fichero.estado_de_la_subida como "subiendo".
+        hago this.$forceUpdate(true).
+        creo respuesta como asíncronamente comandos_remotos.os_subir_fichero.accion(fichero).
+        asigno fichero.estado_de_la_subida como "completado".
+        hago this.$forceUpdate(true).
+        retorno respuesta.
+      } en errores hago utilidades.gestionar_error(error).
+      método asíncrono subir_ficheros donde {
+        debugo "PaginaDePantallaExplorador.methods.subir_ficheros".
+        desde 0 hasta this.ficheros_para_subir_internos.length {
+          creo fichero como this.ficheros_para_subir_internos[index].
+          asigno fichero.estado_de_la_subida como "sin empezar".
+          hago asíncronamente this.subir_fichero(fichero).
+        }.
+      } en errores hago utilidades.gestionar_error(error).
+      método asíncrono limpiar_ficheros donde {
+        asigno this.ficheros_para_subir_internos como [].
+      }.
+    }.
+    propiedad watch como {
+      método ficheros_seleccionados_internos con (nuevo_valor) donde {
+        asigno this.contenedor[this.propiedad] como nuevo_valor.
+      }.
+    }.
+    método asíncrono mounted donde {
+      debugo "PaginaDePantallaExplorador.mounted".
+      desacoplo constantes { ficheros } a partir de asíncronamente comandos_remotos.os_listar_directorio.accion().
+      asigno this.ficheros_para_explorar_internos como ficheros.
+    } en errores hago utilidades.gestionar_error(error).
+  }.
+}.
+
+creo PaginaDeComandoSeparar como un componente vue2 con nombre "PaginaDeComandoSeparar" con plantilla {
+  <div class="PaginaDeComandoSeparar Component">
+    <LineaHorizontal class="marginado_vertical_2" style="margin-top: 0;"></LineaHorizontal>
+    <div class="fuente_titulo">Comando: «xass -x separar»</div>
+    <LineaHorizontal class="marginado_vertical_2" style="margin-bottom: 0;"></LineaHorizontal>
+    <div class="espaciado_2">
+      <EtiquetaDeControl>Ficheros a aplicar separación mínima entre subtítulos:</EtiquetaDeControl>
+      <ControlParaSelectorDeFicherosDeServidor :contenedor="this" propiedad="ficheros_internos" extensiones=".ass"></ControlParaSelectorDeFicherosDeServidor>
+      <EtiquetaDeControl>Separación mínima <b>(en centésimas de segundo)</b>:</EtiquetaDeControl>
+      <ControlParaNumero2 :contenedor="this" propiedad="separacion_minima_interna" ref="separacion_minima" :valor-inicial="separacion_minima_interna" :intervalos="0.01"></ControlParaNumero2>
+      <EtiquetaDeControl>Incluye estilos <b>(<span class="control_de_opcion_textual" :class="{seleccionado:!incluye_estilos_por_regexp_interno}" v-on:click="cambiar_estado_de_incluye_estilos_a_texto">en texto</span> o <span class="control_de_opcion_textual" :class="{seleccionado:incluye_estilos_por_regexp_interno}" v-on:click="cambiar_estado_de_incluye_estilos_a_regexp">en expresión regular</span>)</b>:</EtiquetaDeControl>
+      <template v-if="!incluye_estilos_por_regexp_interno">
+        <ControlParaTexto2 :contenedor="this" propiedad="incluye_estilos_interno" ref="incluye_estilos" :valor-inicial="incluye_estilos_interno" relleno="Modo texto: Estilo 1"></ControlParaTexto2>
+      </template>
+      <template v-else>
+        <ControlParaTexto2 :contenedor="this" propiedad="incluye_estilos_interno" ref="incluye_estilos" :valor-inicial="incluye_estilos_interno" relleno="Modo expresión regular: Estilo(s)? (1|2|3)"></ControlParaTexto2>
+      </template>
+      <EtiquetaDeControl>Excluye estilos <b>(<span class="control_de_opcion_textual" :class="{seleccionado:!excluye_estilos_por_regexp_interno}" v-on:click="cambiar_estado_de_excluye_estilos_a_texto">en texto</span> o <span class="control_de_opcion_textual" :class="{seleccionado:excluye_estilos_por_regexp_interno}" v-on:click="cambiar_estado_de_excluye_estilos_a_regexp">en expresión regular</span>)</b>:</EtiquetaDeControl>
+      <template v-if="!excluye_estilos_por_regexp_interno">
+        <ControlParaTexto2 :contenedor="this" propiedad="excluye_estilos_interno" ref="excluye_estilos" :valor-inicial="excluye_estilos_interno" relleno="Modo texto: Estilo 1"></ControlParaTexto2>
+      </template>
+      <template v-else>
+        <ControlParaTexto2 :contenedor="this" propiedad="excluye_estilos_interno" ref="excluye_estilos" :valor-inicial="excluye_estilos_interno" relleno="Modo expresión regular: Estilo(s)? (1|2|3)"></ControlParaTexto2>
+      </template>
+      <EtiquetaDeControl>Carga izquierda <b>(en porcentaje)</b>:</EtiquetaDeControl>
+      <ControlParaNumero2 :contenedor="this" propiedad="carga_izquierda_interna" ref="carga_izquierda" :valor-inicial="carga_izquierda_interna"></ControlParaNumero2>
+      <EtiquetaDeControl>Carga derecha <b>(en porcentaje)</b>:</EtiquetaDeControl>
+      <ControlParaNumero2 :contenedor="this" propiedad="carga_derecha_interna" ref="carga_derecha" :valor-inicial="carga_derecha_interna"></ControlParaNumero2>
+      <LineaHorizontal class="marginado_vertical_2"></LineaHorizontal>
+      <div style="text-align: right;">
+        <div v-if="estado_de_proceso === 'ejecutando'">
+          Ejecución en proceso...
+        </div>
+        <div v-else>
+          <ControlParaBoton v-on:click.native="ejecutar">Ejecutar</ControlParaBoton>
+        </div>
+        <div v-if="estado_de_proceso === 'ejecutado'">
+          <pre style="text-align: left; max-height: 200px; min-height: 100px; overflow: scroll; resize: vertical;" class="estilo_consola">{{ mensajes_de_consola }}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+} con lógica {
+  retorno {
+    método data donde {
+      debugo "PaginaDeComandoSeparar.data".
+      retorno {
+        propiedad ficheros_internos como [].
+        propiedad carga_izquierda_interna como 50.
+        propiedad carga_derecha_interna como 50.
+        propiedad separacion_minima_interna como 0.17.
+        propiedad incluye_estilos_interno como "".
+        propiedad incluye_estilos_por_regexp_interno como false.
+        propiedad excluye_estilos_interno como "".
+        propiedad excluye_estilos_por_regexp_interno como false.
+        propiedad estado_de_proceso como undefined.
+        propiedad mensajes_de_consola como undefined.
+      }.
+    }.
+    propiedad methods como {
+      método obtener_parametros donde {
+        debugo "PaginaDeComandoSeparar.obtener_parametros".
+        retorno {
+          propiedad ficheros como this.ficheros_internos.
+          propiedad carga_izquierda como this.carga_izquierda_interna.
+          propiedad carga_derecha como this.carga_derecha_interna.
+          propiedad separacion_minima como this.separacion_minima_interna.
+          propiedad incluye_estilos como this.incluye_estilos_interno.
+          propiedad incluye_estilos_por_regexp como this.incluye_estilos_por_regexp_interno.
+          propiedad excluye_estilos como this.excluye_estilos_interno.
+          propiedad excluye_estilos_por_regexp como this.excluye_estilos_por_regexp_interno.
+        }.
+      }.
+      método asíncrono ejecutar donde {
+        debugo "PaginaDeComandoSeparar.methods.ejecutar".
+        asigno this.estado_de_proceso como "ejecutando".
+        hago this.$forceUpdate(true).
+        creo respuesta como asíncronamente comandos_remotos.xass_x_separar.accion(this.obtener_parametros()).
+        asigno this.estado_de_proceso como "ejecutado".
+        asigno this.mensajes_de_consola como respuesta.data.salida.
+      } en errores hago utilidades.gestionar_error(error).
+      método cambiar_estado_de_incluye_estilos_a_texto donde {
+        debugo "PaginaDeComandoSeparar.methods.cambia_estado_de_incluye_estilos_a_texto".
+        asigno this.incluye_estilos_por_regexp_interno como false.
+      }.
+      método cambiar_estado_de_incluye_estilos_a_regexp donde {
+        debugo "PaginaDeComandoSeparar.methods.cambiar_estado_de_incluye_estilos_a_regexp".
+        asigno this.incluye_estilos_por_regexp_interno como true.
+      }.
+      método cambiar_estado_de_excluye_estilos_a_texto donde {
+        debugo "PaginaDeComandoSeparar.methods.cambiar_estado_de_excluye_estilos_a_texto".
+        asigno this.excluye_estilos_por_regexp_interno como false.
+      }.
+      método cambiar_estado_de_excluye_estilos_a_regexp donde {
+        debugo "PaginaDeComandoSeparar.methods.cambiar_estado_de_excluye_estilos_a_regexp".
+        asigno this.excluye_estilos_por_regexp_interno como true.
+      }.
+    }.
+    propiedad watch como {
+      método carga_izquierda_interna con (nuevo_valor) donde {
+        debugo "PaginaDeComandoSeparar.watch.carga_izquierda_interna".
+        creo nuevo_numero como nuevo_valor numerizado.
+        si nuevo_numero no es tipo número normal retorno.
+        si nuevo_numero es mayor que 100 o nuevo_numero es menor que 0 retorno.
+        creo complementario como 100 - nuevo_numero.
+        asigno this.$refs.carga_derecha.valor_interno como complementario.
+      }.
+      método carga_derecha_interna con (nuevo_valor) donde {
+        debugo "PaginaDeComandoSeparar.watch.carga_derecha_interna".
+        creo nuevo_numero como nuevo_valor numerizado.
+        si nuevo_numero no es tipo número normal retorno.
+        si nuevo_numero es mayor que 100 o nuevo_numero es menor que 0 retorno.
+        creo complementario como 100 - nuevo_numero.
+        asigno this.$refs.carga_izquierda.valor_interno como complementario.
+      }.
+    }.
+  }.
+}.
+
+asigno Vue.prototype.$utils como utilidades.
+
+creo App como una aplicación vue2 con nombre "App" con rutas [{
+    propiedad path como "/comando/xass/separar".
+    propiedad name como "ComandoSeparar".
+    propiedad component como PaginaDeComandoSeparar.
+    propiedad props como {}.
+}, {
+    propiedad path como "/pantalla/ayuda".
+    propiedad name como "PantallaAyuda".
+    propiedad component como PaginaDePantallaAyuda.
+    propiedad props como {}.
+}, {
+    propiedad path como "/pantalla/configuraciones".
+    propiedad name como "PantallaConfiguraciones".
+    propiedad component como PaginaDePantallaConfiguraciones.
+    propiedad props como {}.
+}, {
+    propiedad path como "/pantalla/explorador".
+    propiedad name como "PantallaExplorador".
+    propiedad component como PaginaDePantallaExplorador.
+    propiedad props como {}.
+}, {
+    propiedad path como "/".
+    propiedad name como "Home".
+    propiedad component como PaginaDeInicio.
+    propiedad props como {}.
+}] con traducciones {
+    propiedad es como {}.
+    propiedad en como {}.
+    propiedad ca como {}.
+} con plantilla {
+  <div class="App Component Castelog-app">
+    <BarraSuperior>
+      <template v-slot:esquina>
+        <ControlParaBoton v-on:click.native="$root.mostrar_u_ocultar_menu">=</ControlParaBoton>
+      </template>
+      <template v-slot:barra>
+        <div class="fuente_titulo espaciado_horizontal_2">xass-ui · v1.0.0</div>
+      </template>
+      <template v-slot:menu>
+        <div class="menu_de_navegacion">
+          <ul class="opciones_de_menu">
+            <li class="opcion_de_menu">
+              <div class="texto_de_opcion">
+                <ControlParaBoton class="width_100x100 text_align_left" v-on:click.native="() => $root.ir_a_pagina('/')">
+                  <span>· Inicio </span>
+                </ControlParaBoton>
+              </div>
+            </li>
+            <li class="opcion_de_menu">
+              <div class="texto_de_opcion">
+                <ControlParaBoton class="width_100x100 text_align_left" v-on:click.native="() => $root.ir_a_pagina('/pantalla/explorador')">
+                  <span>· Explorador de ficheros</span>
+                </ControlParaBoton>
+              </div>
+            </li>
+            <li class="opcion_de_menu">
+              <div class="texto_de_opcion">
+                <ControlParaBoton class="width_100x100 text_align_left" v-on:click.native="() => $root.ir_a_pagina('/comando/xass/separar')">
+                  <span>· Separar subtítulos</span>
+                </ControlParaBoton>
+              </div>
+            </li>
+            <li class="opcion_de_menu">
+              <div class="texto_de_opcion">
+                <ControlParaBoton class="width_100x100 text_align_left" v-on:click.native="() => $root.ir_a_pagina('/pantalla/configuraciones')">
+                  <span>· Configuraciones</span>
+                </ControlParaBoton>
+              </div>
+            </li>
+            <li class="opcion_de_menu">
+              <div class="texto_de_opcion">
+                <ControlParaBoton class="width_100x100 text_align_left" v-on:click.native="() => $root.ir_a_pagina('/pantalla/ayuda')">
+                  <span>· Ayuda</span>
+                </ControlParaBoton>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </template>
+    </BarraSuperior>
+    <div v-if="$root.esta_mostrando_menu" class="fondo_de_navegacion"></div>
+    <router-view></router-view>
+    <PuertoDeNotificaciones />
+  </div>
+} con estilos {
+    html {}
+    body {}
+    .Component {}
+    .App {}
+} con lógica {
+  retorno {
+    método data donde {
+      debugo "App.data".
+      retorno {
+        propiedad esta_mostrando_menu como false.
+        propiedad esta_mostrando_comandos_en_navegacion como true.
+      }.
+    }.
+    propiedad methods como {
+      método mostrar_u_ocultar_menu donde {
+        debugo "App.methods.mostrar_u_ocultar_menu".
+        asigno this.esta_mostrando_menu como no this.esta_mostrando_menu.
+      }.
+      método mostrar_u_ocultar_comandos_en_navegacion donde {
+        debugo "App.methods.mostrar_u_ocultar_comandos_en_navegacion".
+        asigno this.esta_mostrando_comandos_en_navegacion como no this.esta_mostrando_comandos_en_navegacion.
+      }.
+      método ir_a_pagina con (link) donde {
+        debugo "App.methods.ir_a_pagina".
+        asigno this.esta_mostrando_menu como false.
+        hago this.$router.history.push(link).
+      }.
+    }.
+    propiedad watch como {}.
+    método beforeMount donde {
+      debugo "App.beforeMount".
+      asigno this.$root como this.
+    }.
+    método mounted donde {
+      debugo "App.mounted".
+    }.
+  }.
+} montada en "#app".
