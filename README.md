@@ -71,6 +71,13 @@ A continuación se listan todos los comandos que está preparado para correr el 
  - La separación puede establecerse según los lados con `--carga-izquierda` y `--carga-derecha`.
  - Los filtros de clases (`--incluir-estilo` y `--excluir-estilo`) se aplican tanto para el subtítulo A como para el B.
 
+----
+
+### `Comando: xass -x interfaz`
+
+**Descripción:**
+
+> Consiste en levantar un servidor y visitarlo con el navegador para poder usar los comandos desde interfaz gráfica.
 
 ----
 
