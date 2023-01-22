@@ -85,3 +85,4 @@ A continuación se listan todos los comandos que está preparado para correr el 
 
   - Github: [https://github.com/allnulled/xass](https://github.com/allnulled/xass)
   - NPM: [https://npmjs.com/@allnulled/xass](https://npmjs.com/@allnulled/xass)
+  - Correo: [carlcarlsonc18@gmail.com](mailto:carlcarlsonc18@gmail.com)
